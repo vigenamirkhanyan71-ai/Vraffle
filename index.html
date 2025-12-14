@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TON Raffle System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d1b69 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #a0aec0;
+            font-size: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(30, 30, 46, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label {
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: #4ecdc4;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .action-section {
+            background: rgba(30, 30, 46, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0aec0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #0088ff 100%);
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(124, 58, 237, 0.2);
+            color: #7c3aed;
+            border: 1px solid #7c3aed;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(124, 58, 237, 0.3);
+        }
+
+        .ticket {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ticket-numbers {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .number {
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(78, 205, 196, 0.2);
+            border: 1px solid #4ecdc4;
+            color: #4ecdc4;
+        }
+
+        .alert-error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .alert-info {
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .referral-section {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .copy-btn {
+            background: #00d4ff;
+            color: #000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            margin-left: 10px;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            background: #00ffff;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 28px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🎰 TON Raffle System</h1>
+            <p class="subtitle">Limited 1000 Tickets • 100 TON Prize Pool</p>
+        </div>
+
+        <div id="alerts"></div>
+
+        <!-- Stats Cards -->
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">🎟️ Raffle Status</div>
+                <div class="stat">
+                    <span class="stat-label">Tickets Sold</span>
+                    <span class="stat-value" id="ticketsSold">0/1000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value" id="raffleStatus">🔴 Waiting</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💰 Prize Information</div>
+                <div class="stat">
+                    <span class="stat-label">Total Prize</span>
+                    <span class="stat-value">100 TON</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Ticket Price</span>
+                    <span class="stat-value">0.5 TON</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Max Per Person</span>
+                    <span class="stat-value">20 Tickets</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">👤 Your Info</div>
+                <div class="stat">
+                    <span class="stat-label">Your Tickets</span>
+                    <span class="stat-value" id="userTickets">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Can Buy</span>
+                    <span class="stat-value" id="canBuy">20</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Total Spent</span>
+                    <span class="stat-value" id="totalSpent">0 TON</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buy Tickets Section -->
+        <div class="action-section">
+            <h2 style="margin-bottom: 20px; color: #00d4ff;">🎟️ Buy Tickets</h2>
+            
+            <div class="input-group">
+                <label>Number of Tickets</label>
+                <input type="number" id="ticketAmount" min="1" max="20" value="1" placeholder="Enter amount (1-20)">
+            </div>
+
+            <div class="input-group">
+                <label>Wallet Address</label>
+                <input type="text" id="walletAddress" placeholder="Your TON wallet address">
+            </div>
+
+            <div class="input-group" style="background: rgba(0, 212, 255, 0.05); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.2);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #a0aec0;">Total Cost</span>
+                    <span id="totalCost" style="color: #00d4ff; font-weight: 700; font-size: 18px;">0.5 TON</span>
+                </div>
+                <div style="color: #a0aec0; font-size: 12px;">
+                    ℹ️ Each ticket contains 6 random numbers (1-50)
+                </div>
+            </div>
+
+            <div class="button-group" style="margin-top: 20px;">
+                <button class="btn-primary" onclick="setWalletAndBuy()">💳 Buy Tickets</button>
+                <button class="btn-secondary" onclick="quickBuy(5)">Quick: 5 Tickets</button>
+                <button class="btn-secondary" onclick="quickBuy(10)">Quick: 10 Tickets</button>
+            </div>
+        </div>
+
+        <!-- Your Tickets -->
+        <div class="action-section">
+            <h2 style="margin-bottom: 20px; color: #00d4ff;">🎟️ Your Tickets</h2>
+            <div id="ticketsContainer" style="max-height: 400px; overflow-y: auto;">
+                <p style="color: #a0aec0; text-align: center;">Loading tickets...</p>
+            </div>
+        </div>
+
+        <!-- Referral Section -->
+        <div class="action-section">
+            <h2 style="margin-bottom: 20px; color: #00d4ff;">👥 Referral Program</h2>
+            <div class="referral-section">
+                <div style="margin-bottom: 15px;">
+                    <label>Your Referral Code</label>
+                    <div style="display: flex; align-items: center; margin-top: 10px;">
+                        <input type="text" id="referralCode" readonly style="flex: 1;">
+                        <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+                    </div>
+                </div>
+                <div style="color: #a0aec0; font-size: 14px;">
+                    ℹ️ Share your code with friends! You earn 10% commission from their ticket purchases (after 700+ tickets sold).
+                </div>
+            </div>
+
+            <div class="stat" style="margin-top: 20px;">
+                <span class="stat-label">Your Referrals</span>
+                <span class="stat-value" id="referralCount">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Referral Earnings</span>
+                <span class="stat-value" id="referralEarnings">0 TON</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userData = null;
+
+        async function init() {
+            try {
+                await loadUserData();
+                await loadRaffleStats();
+                await loadTickets();
+            } catch (error) {
+                showAlert('Error loading data', 'error');
+            }
+        }
+
+        async function loadUserData() {
+            const response = await fetch('/api/user', {
+                headers: {
+                    'X-User-Id': getTelegramUserId()
+                }
+            });
+            userData = await response.json();
+            updateUI();
+        }
+
+        async function loadRaffleStats() {
+            const response = await fetch('/api/raffle/stats');
+            const stats = await response.json();
+            
+            const percentage = (stats.tickets_sold / stats.max_tickets) * 100;
+            document.getElementById('ticketsSold').textContent = `${stats.tickets_sold}/${stats.max_tickets}`;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            
+            if (stats.is_ready_for_draw) {
+                document.getElementById('raffleStatus').textContent = '🟢 Ready to Draw!';
+            } else {
+                document.getElementById('raffleStatus').textContent = `⏳ Need ${stats.need_for_draw} more`;
+            }
+        }
+
+        async function loadTickets() {
+            const response = await fetch('/api/tickets', {
+                headers: {
+                    'X-User-Id': getTelegramUserId()
+                }
+            });
+            const data = await response.json();
+            displayTickets(data.tickets);
+        }
+
+        function updateUI() {
+            if (!userData) return;
+            
+            document.getElementById('userTickets').textContent = userData.tickets_owned;
+            document.getElementById('canBuy').textContent = 20 - userData.tickets_owned;
+            document.getElementById('totalSpent').textContent = userData.total_spent.toFixed(2) + ' TON';
+            document.getElementById('referralCode').value = userData.referral_code;
+            document.getElementById('referralCount').textContent = userData.referrals_count;
+            document.getElementById('referralEarnings').textContent = userData.referral_earnings.toFixed(2) + ' TON';
+            
+            if (userData.wallet_address) {
+                document.getElementById('walletAddress').value = userData.wallet_address;
+                document.getElementById('walletAddress').readOnly = true;
+            }
+            
+            updateTotalCost();
+        }
+
+        function updateTotalCost() {
+            const amount = parseInt(document.getElementById('ticketAmount').value) || 0;
+            const total = Math.max(0, Math.min(amount, 20)) * 0.5;
+            document.getElementById('totalCost').textContent = total.toFixed(2) + ' TON';
+        }
+
+        function displayTickets(tickets) {
+            const container = document.getElementById('ticketsContainer');
+            
+            if (tickets.length === 0) {
+                container.innerHTML = '<p style="color: #a0aec0; text-align: center;">You don\'t have any tickets yet.</p>';
+                return;
+            }
+
+            let html = '';
+            tickets.forEach((ticket, index) => {
+                html += `
+                    <div class="ticket">
+                        <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
+                            <span style="color: #a0aec0; font-weight: 700; min-width: 60px;">Ticket #${index + 1}</span>
+                            <div class="ticket-numbers">
+                                ${ticket.numbers.map(num => `<div class="number">${num}</div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        async function setWalletAndBuy() {
+            const wallet = document.getElementById('walletAddress').value.trim();
+            
+            if (!wallet) {
+                showAlert('Please enter wallet address', 'error');
+                return;
+            }
+
+            if (!wallet.startsWith('EQ') || wallet.length !== 66) {
+                showAlert('Invalid wallet address', 'error');
+                return;
+            }
+
+            if (!userData.wallet_address) {
+                try {
+                    await fetch('/api/wallet', {
+                        method: 'POST',
+                        headers: {
+                            'X-User-Id': getTelegramUserId(),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ wallet })
+                    });
+                } catch (error) {
+                    showAlert('Error setting wallet', 'error');
+                    return;
+                }
+            }
+
+            await buyTickets();
+        }
+
+        async function buyTickets() {
+            const amount = parseInt(document.getElementById('ticketAmount').value) || 0;
+            const canBuy = 20 - userData.tickets_owned;
+
+            if (amount <= 0) {
+                showAlert('Please enter valid amount', 'error');
+                return;
+            }
+
+            if (amount > canBuy) {
+                showAlert(`You can only buy ${canBuy} more tickets!`, 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/buy-tickets', {
+                    method: 'POST',
+                    headers: {
+                        'X-User-Id': getTelegramUserId(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert(`✅ Bought ${amount} ticket(s) for ${result.total_cost.toFixed(2)} TON!`, 'success');
+                    document.getElementById('ticketAmount').value = 1;
+                    await loadUserData();
+                    await loadRaffleStats();
+                    await loadTickets();
+                } else {
+                    showAlert(result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Error buying tickets', 'error');
+            }
+        }
+
+        function quickBuy(amount) {
+            document.getElementById('ticketAmount').value = amount;
+            updateTotalCost();
+            setWalletAndBuy();
+        }
+
+        function copyToClipboard() {
+            const code = document.getElementById('referralCode').value;
+            navigator.clipboard.writeText(code);
+            showAlert('✅ Code copied!', 'success');
+        }
+
+        function showAlert(message, type) {
+            const alertsContainer = document.getElementById('alerts');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertsContainer.appendChild(alert);
+
+            setTimeout(() => alert.remove(), 4000);
+        }
+
+        function getTelegramUserId() {
+            return window.Telegram?.WebApp?.initDataUnsafe?.user?.id || '0';
+        }
+
+        document.getElementById('ticketAmount').addEventListener('change', updateTotalCost);
+        document.getElementById('ticketAmount').addEventListener('input', updateTotalCost);
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
