@@ -10,7 +10,7 @@ from database import db
 # --- CONFIGURATION ---
 # PASTE YOUR NEW VERCEL LINK HERE (NOT THE GITHUB LINK)
 # It should look like: https://vraffle.vercel.app
-WEB_APP_URL = 'https://vraffle.vercel.app' 
+WEB_APP_URL = ' https://vigenamirkhanyan71-ai.github.io/Vraffle/' 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -225,4 +225,5 @@ async def main():
         await bot.session.close()
 
 if __name__ == '__main__':
+
     asyncio.run(main())
