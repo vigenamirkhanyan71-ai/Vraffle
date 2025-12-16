@@ -1,11 +1,16 @@
 import logging
 import asyncio
+import os
+from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import BOT_TOKEN, ADMIN_ID, TICKET_PRICE, MAX_TICKETS_PER_USER, PRIZE_POOL
 from models import User, Ticket, Raffle
 from database import db
+ 
+
+
 
 # --- CONFIGURATION ---
 WEB_APP_URL = 'https://vraffle.vercel.app'
@@ -867,5 +872,6 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+
 
 
