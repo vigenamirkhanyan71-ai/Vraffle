@@ -9,7 +9,7 @@ from database import db
 
 # --- CONFIGURATION ---
 WEB_APP_URL = 'https://vraffle.vercel.app'
-TON_WALLET_ADDRESS = 'UQDmSiO5MZPfp9pDpqJ-oVbPULDULqwlVVXwVoNVDXpMOB5k'
+TON_WALLET_ADDRESS = 'UQBNaut8qxhFJC-ZqmEeU5ZBaNuyARJO1TUIOlRA6ZZRhYlZ'
 GROUP_LINK = 'https://t.me/your_raffle_group'
 ADMIN_PASSWORD = 'Vigen21.'  # Change this to your admin password!      
 NUM_WINNERS = 5
@@ -867,3 +867,4 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+
